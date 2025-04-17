@@ -15,37 +15,28 @@ Algebra(2, 0, 1, () => {
   let create_point = (x, y) => !(1e0 + x*1e1 + y*1e2);
   let create_line = (a,b,c) => a*1e1 + b*1e2 + c*1e0;
   let motor = (point, angle_or_distance) => Math.E ** (angle_or_distance / 2 * point); 
+  let  time = () => performance.now() / 1000;
   /* End of templates section */
 
   let center_point = create_point(0, 0);
 
-  let p1 = create_point(-1, -0.5);
-  let p2 = create_point(1, -0.3);
-  let p3 = create_point(0, 0.8);
 
-  let  time = () => performance.now() / 1000;
+  let t1 = () => motor(center_point, -time()) >>> create_point(-1, -1);
+  let t2 = () => motor(center_point, -time()) >>> create_point(-1, 1);
+  let t3 = () => motor(center_point, -time()) >>> create_point(1, -1);
+  let t4 = () => motor(center_point, -time()) >>> create_point(1, 1);
+  
   let  rotation_point = () => motor(center_point, time()) >>> create_point(1, 1);
   let  center_line = () => rotation_point & center_point;
-  let flat_line = create_line(1, 0, 0);
-  addToRender(flat_line);
-  //addToRender(() => center_line ^ flat_line);
-  
-  let t1 = () => motor(center_point, -time()) >>> p1;
-  let t2 = () => motor(center_point, -time()) >>> p2;
-  let t3 = () => motor(center_point, -time()) >>> p3;
-  addToRender(t1, t2, t3);
-  addToRender([t1, t2, t3]);
-
-
-  //addToRender([t1, t2], [t1, t3], [t2, t3]);
-
-
-
+  addToRender(center_line);
   let inter1 = () => center_line ^ (t1 & t2);
-  let inter2 = () => center_line ^ (t1 & t3);
-  let inter3 = () => center_line ^ (t2 & t3);
-
-  //addToRender(inter1, inter2, inter3);
+  let inter2 = () => center_line ^ (t2 & t3);
+  let inter3 = () => center_line ^ (t3 & t4);
+  let inter4 = () => center_line ^ (t4 & t1);
+  addToRender(inter1, inter2, inter3, inter4);
+  addToRender(center_point, "C");
+  addToRender([t2, t1, t3, t4]);
+  
 
   document.body.appendChild(this.graph(() => {
     return renders;
@@ -54,10 +45,9 @@ Algebra(2, 0, 1, () => {
     lineWidth: 3,
     labels: true,
     animate: true,
+    scale: 0.5,
   }));
 });
-
-
 
 
 
